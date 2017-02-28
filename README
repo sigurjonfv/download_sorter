@@ -1,0 +1,55 @@
+Dependencies:
+  guessit - "pip3 install guessit" - We use this to help us find titles, seasons and episodes from file names.
+
+Execution:
+  run “python3 icleanV3.py [path-to-input-folder] [path-to-output-folder]"
+  in your shell. Notice that all paths can be relative or absolute.
+  Recommended first run is “python3 icleanV3.py [input-path] sorted -c corrections.txt”
+
+Optional Arguments:
+  There are a few optional arguments and flags you can provide. Run "python3 icleanV3.py -h" to see a full list.
+  Examples of arguments:
+    “-c [path]”: Path to a corrections file, see Corrections chapter for more info.
+    “-v”: Verbose
+    “-t [0-2]”: Defines how intelligent vs strict the tool is.
+       0: Intelligently determines information about files based on either file names or the folders they are in 
+          (Default and Recommended).
+       1: Semi-Intelligently only determines information about files based on file names only, except for titles,
+          which may be determined by the folders they are in.
+       2 or higher: Strictly determines information about files based only on the file name, not the folder they
+          are in.
+    Lists of the form “one,two,three” containing file extensions for certain types of files (Picture, Audio, Video,
+    Subtitle and Junk) 
+
+Prompts:
+  The only prompt we print is "Press any button to start" which will then start sorting when you type something.
+
+Extra features:
+  Deleting junk: We keep a list of extensions (which can be modified by the user) and every file which has an extension
+  in this list is deleted. For example by default these extesions are junk: torrent, part, nfo and txt.
+
+  Removing empty directories: We iterate through the source folder bottom up so after sorting out files and deleting
+  junk we check the current folder for empty directories and delete them.
+
+  Picture files: We sort any files which have an image extension into a "pictures" folder. Inside that folder we put no
+  sub folders, we would move "Pirates 3/At world's end.engsub/poster.png" to "pictures/poster.png".
+
+  Audio files: When we find an audio file we move it to our "audio" folder. We keep the folder structure so that when
+  we encounter "Learn chinese/Disc 3/Lesson 4/4.mp3" it gets moved to "audio/Learn chinese/Disc 3/Lesson 4/4.mp3". This
+  helps group cd's together and we felt it was better than just copying the file.
+
+  Movies: We also try to sort out files which have a video file extension but don't look like they are part of a tv
+  series. They get moved to a "movies" folder. We don't keep the file structure here so "Star wars I,II,III/III/Star
+  wars - Revenge of the sith.avi" gets moved to "movies/Star wars I,II,III/Star wars - Revenge of the sith.avi".
+
+  Subtitles: We try to move subtitles with its episode or movie. "jimmy.carr.live.2013-haggis.sub" gets moved to
+  "movies/Jimmy Carr Live/jimmy.carr.live.2013-haggis.sub" along with the movie file.
+
+  Corrections: We noticed that the library we are using, guessit, sometimes has trouble with names that contain numbers
+  so we created a corrections system that fixes these mistakes. If you see that the program is always sorting "30 rock"
+  as "rock" then you can add a rule to "corrections.txt" which says "rock->episode/30 Rock" this tells our program that
+  whatever gets sorted as "rock" should instead be considered a tv show and should be named "30 Rock". These rules can
+  also specify the season. For example "301b->episode/Adventure Time/3" will put anything with the title "301b" as
+  the tv show Adventure Time season 3. This could be helpful if you find some episode naming convention that guessit
+  has problems with.
+  Correction.txt, an example corrections file is provided, add “-c corrections.txt” to use it.
